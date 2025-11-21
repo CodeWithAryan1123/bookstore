@@ -129,6 +129,7 @@ export const CartProvider = ({ children }) => {
 
   const value = {
     cartItems,
+    cart: cartItems, // alias for consistency
     wishlist,
     addToCart,
     removeFromCart,
@@ -138,6 +139,7 @@ export const CartProvider = ({ children }) => {
     removeFromWishlist,
     isInWishlist,
     getCartTotal,
+    cartTotal: getCartTotal(), // computed value
     getCartCount
   };
 

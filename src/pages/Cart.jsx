@@ -15,8 +15,7 @@ const Cart = () => {
 
   const subtotal = getCartTotal();
   const shipping = subtotal > 999 ? 0 : 49;
-  const tax = subtotal * 0.18;
-  const total = subtotal + shipping + tax - discount;
+  const total = subtotal + shipping - discount;
 
   const applyCoupon = () => {
     if (couponCode.toLowerCase() === 'book20') {
@@ -36,23 +35,7 @@ const Cart = () => {
       return;
     }
 
-    try {
-      const order = createOrder({
-        items: cartItems,
-        subtotal,
-        tax,
-        shipping,
-        discount,
-        total,
-        paymentMethod: 'COD'
-      });
-
-      clearCart();
-      showToast('Order placed successfully!');
-      navigate('/profile?tab=orders');
-    } catch (error) {
-      showToast(error.message, 'error');
-    }
+    navigate('/checkout');
   };
 
   const showToast = (message, type = 'success') => {
@@ -157,10 +140,6 @@ const Cart = () => {
               <div className="summary-row">
                 <span>Shipping</span>
                 <span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
-              </div>
-              <div className="summary-row">
-                <span>GST (18%)</span>
-                <span>₹{tax.toFixed(0)}</span>
               </div>
               {discount > 0 && (
                 <div className="summary-row discount-row">

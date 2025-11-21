@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import Bestsellers from './pages/Bestsellers';
+import Checkout from './pages/Checkout';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/orders" element={<Profile />} />
+                  <Route path="/checkout" element={<Checkout />} />
                 </Routes>
               </main>
               <Footer />

@@ -94,9 +94,18 @@ export const OrderProvider = ({ children }) => {
     };
   };
 
+  // Alias for createOrder to support checkout flow
+  const placeOrder = (items, orderDetails) => {
+    return createOrder({
+      items,
+      ...orderDetails
+    });
+  };
+
   const value = {
     orders,
     createOrder,
+    placeOrder,
     getOrderById,
     updateOrderStatus,
     getOrderStats,

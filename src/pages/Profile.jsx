@@ -13,11 +13,27 @@ const Profile = () => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'profile');
   const [isEditing, setIsEditing] = useState(false);
+  
+  // Helper to format address
+  const formatAddress = (address) => {
+    if (!address) return '';
+    if (typeof address === 'string') return address;
+    // If address is an object (from checkout)
+    const parts = [
+      address.address1,
+      address.address2,
+      address.city,
+      address.state,
+      address.pincode
+    ].filter(Boolean);
+    return parts.join(', ');
+  };
+  
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    address: user?.address || ''
+    address: formatAddress(user?.address)
   });
 
   useEffect(() => {
@@ -205,7 +221,7 @@ const Profile = () => {
                   </div>
                   <div className="info-row">
                     <span className="info-label">Address:</span>
-                    <span className="info-value">{user.address || 'Not provided'}</span>
+                    <span className="info-value">{formatAddress(user.address) || 'Not provided'}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">Member Since:</span>

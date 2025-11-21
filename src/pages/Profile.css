@@ -5,7 +5,8 @@
 }
 
 .profile-header {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: var(--surface);
+  border: 2px solid var(--border);
   padding: 60px;
   border-radius: var(--border-radius-lg);
   display: flex;
@@ -19,8 +20,8 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: white;
-  color: var(--primary);
+  background: var(--primary);
+  color: var(--background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,18 +32,18 @@
 
 .profile-header-info {
   flex: 1;
-  color: white;
+  color: var(--text-primary);
 }
 
 .profile-header-info h1 {
-  color: white;
+  color: var(--text-primary);
   font-size: 42px;
   margin-bottom: 8px;
 }
 
 .profile-header-info > p {
   font-size: 18px;
-  opacity: 0.9;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -60,11 +61,12 @@
   font-size: 32px;
   font-weight: 700;
   font-family: 'Playfair Display', serif;
+  color: var(--text-primary);
 }
 
 .stat-label {
   font-size: 14px;
-  opacity: 0.9;
+  color: var(--text-secondary);
 }
 
 .profile-content {
@@ -109,19 +111,19 @@
 
 .profile-nav-btn.active {
   background: var(--primary);
-  color: white;
+  color: var(--background);
 }
 
 .logout-btn {
-  color: var(--accent);
+  color: var(--text-secondary);
   margin-top: 8px;
-  border-top: 1px solid var(--background);
+  border-top: 1px solid var(--border);
   padding-top: 16px;
 }
 
 .logout-btn:hover {
   background: var(--accent);
-  color: white;
+  color: var(--background);
 }
 
 .profile-main {
@@ -147,7 +149,7 @@
 .profile-section h2 {
   font-size: 28px;
   margin-bottom: 24px;
-  color: var(--primary-dark);
+  color: var(--text-primary);
 }
 
 .profile-form {

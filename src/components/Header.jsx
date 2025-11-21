@@ -103,10 +103,10 @@ const Header = () => {
                   </button>
                   {showUserMenu && (
                     <div className="user-dropdown">
-                      <Link to="/profile" onClick={() => setShowUserMenu(false)}>
+                      <Link to="/profile?tab=profile" onClick={() => setShowUserMenu(false)}>
                         <i className="fa-solid fa-user"></i> Profile
                       </Link>
-                      <Link to="/orders" onClick={() => setShowUserMenu(false)}>
+                      <Link to="/profile?tab=orders" onClick={() => setShowUserMenu(false)}>
                         <i className="fa-solid fa-box"></i> Orders
                       </Link>
                       <button onClick={handleLogout}>
