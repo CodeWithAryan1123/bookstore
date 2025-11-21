@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useOrders } from '../context/OrderContext';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import './Profile.css';
 
 const Profile = () => {
   const { user, logout, updateUser } = useAuth();
+  const { wishlist } = useCart();
+  const { orders, getOrderStats } = useOrders();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'profile');
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
+    phone: user?.phone || '',
+    address: user?.address || ''
   });
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   if (!user) {
     navigate('/login');
     return null;
   }
+
+  const stats = getOrderStats();
 
   const handleChange = (e) => {
     setFormData({
@@ -39,29 +56,22 @@ const Profile = () => {
     setTimeout(() => toast.remove(), 2000);
   };
 
-  const orders = [
-    {
-      id: 'ORD-12345',
-      date: '2024-11-15',
-      status: 'Delivered',
-      total: 5697,
-      items: 3
-    },
-    {
-      id: 'ORD-12346',
-      date: '2024-11-10',
-      status: 'In Transit',
-      total: 3598,
-      items: 2
-    },
-    {
-      id: 'ORD-12347',
-      date: '2024-11-05',
-      status: 'Delivered',
-      total: 7496,
-      items: 4
-    }
-  ];
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      pending: '#FFA500',
+      delivered: '#4CAF50',
+      cancelled: '#F44336'
+    };
+    return colors[status] || '#666';
+  };
 
   return (
     <div className="profile-page">
@@ -75,12 +85,12 @@ const Profile = () => {
             <p>{user.email}</p>
             <div className="profile-stats">
               <div className="stat-item">
-                <span className="stat-number">12</span>
-                <span className="stat-label">Books Purchased</span>
+                <span className="stat-number">{stats.total}</span>
+                <span className="stat-label">Total Orders</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">8</span>
-                <span className="stat-label">Reviews Written</span>
+                <span className="stat-number">{wishlist.length}</span>
+                <span className="stat-label">Wishlist Items</span>
               </div>
               <div className="stat-item">
                 <span className="stat-number">5</span>
@@ -93,51 +103,55 @@ const Profile = () => {
         <div className="profile-content">
           <div className="profile-sidebar">
             <nav className="profile-nav">
-              <button className="profile-nav-btn active">
+              <button 
+                className={`profile-nav-btn ${activeTab === 'profile' ? 'active' : ''}`}
+                onClick={() => setActiveTab('profile')}
+              >
                 <i className="fa-solid fa-user"></i> Profile Information
               </button>
-              <button className="profile-nav-btn">
+              <button 
+                className={`profile-nav-btn ${activeTab === 'orders' ? 'active' : ''}`}
+                onClick={() => setActiveTab('orders')}
+              >
                 <i className="fa-solid fa-box"></i> Order History
               </button>
-              <button className="profile-nav-btn">
+              <button 
+                className={`profile-nav-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
+                onClick={() => setActiveTab('wishlist')}
+              >
                 <i className="fa-solid fa-heart"></i> Wishlist
               </button>
-              <button className="profile-nav-btn">
-                <i className="fa-solid fa-star"></i> Reviews
-              </button>
-              <button className="profile-nav-btn">
-                <i className="fa-solid fa-gear"></i> Settings
-              </button>
               <button className="profile-nav-btn logout-btn" onClick={logout}>
-                🚪 Logout
+                <i className="fa-solid fa-right-from-bracket"></i> Logout
               </button>
             </nav>
           </div>
 
           <div className="profile-main">
-            <div className="profile-section">
-              <div className="section-header">
-                <h2>Profile Information</h2>
-                <button 
-                  className="btn btn-outline"
-                  onClick={() => setIsEditing(!isEditing)}
-                >
-                  {isEditing ? 'Cancel' : 'Edit Profile'}
-                </button>
-              </div>
+            {activeTab === 'profile' && (
+              <div className="profile-section">
+                <div className="section-header">
+                  <h2>Profile Information</h2>
+                  <button 
+                    className="btn btn-outline"
+                    onClick={() => setIsEditing(!isEditing)}
+                  >
+                    {isEditing ? 'Cancel' : 'Edit Profile'}
+                  </button>
+                </div>
 
-              {isEditing ? (
-                <form onSubmit={handleSubmit} className="profile-form">
-                  <div className="form-group">
-                    <label>Full Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                {isEditing ? (
+                  <form onSubmit={handleSubmit} className="profile-form">
+                    <div className="form-group">
+                      <label>Full Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
                   <div className="form-group">
                     <label>Email Address</label>
                     <input
@@ -148,6 +162,29 @@ const Profile = () => {
                       required
                     />
                   </div>
+                  
+                  <div className="form-group">
+                    <label>Phone</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Address</label>
+                    <textarea
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      rows="3"
+                      placeholder="Enter your address"
+                    />
+                  </div>
+
                   <button type="submit" className="btn btn-primary">
                     Save Changes
                   </button>
@@ -163,6 +200,14 @@ const Profile = () => {
                     <span className="info-value">{user.email}</span>
                   </div>
                   <div className="info-row">
+                    <span className="info-label">Phone:</span>
+                    <span className="info-value">{user.phone || 'Not provided'}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Address:</span>
+                    <span className="info-value">{user.address || 'Not provided'}</span>
+                  </div>
+                  <div className="info-row">
                     <span className="info-label">Member Since:</span>
                     <span className="info-value">
                       {new Date(user.createdAt).toLocaleDateString('en-US', { 
@@ -173,51 +218,80 @@ const Profile = () => {
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
-            <div className="profile-section">
-              <h2>Recent Orders</h2>
-              <div className="orders-list">
-                {orders.map(order => (
-                  <div key={order.id} className="order-card">
-                    <div className="order-header">
-                      <div>
-                        <h3>Order {order.id}</h3>
-                        <p className="order-date">{new Date(order.date).toLocaleDateString()}</p>
+            {activeTab === 'orders' && (
+              <div className="profile-section">
+                <h2>Order History</h2>
+                {orders.length === 0 ? (
+                  <div className="empty-state">
+                    <i className="fa-solid fa-box" style={{fontSize: '48px', color: 'var(--text-secondary)'}}></i>
+                    <p>No orders yet</p>
+                    <Link to="/books" className="btn btn-primary">Start Shopping</Link>
+                  </div>
+                ) : (
+                  <div className="orders-list">
+                    {orders.map(order => (
+                      <div key={order.id} className="order-card">
+                        <div className="order-header">
+                          <div>
+                            <h3>Order #{order.id.slice(-6)}</h3>
+                            <p className="order-date">{formatDate(order.createdAt)}</p>
+                          </div>
+                          <span 
+                            className="order-status"
+                            style={{color: getStatusColor(order.status)}}
+                          >
+                            {order.status.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="order-items-preview">
+                          {order.items.slice(0, 3).map((item, index) => (
+                            <div key={index} className="order-item-mini">
+                              <img src={item.image} alt={item.title} />
+                            </div>
+                          ))}
+                          {order.items.length > 3 && (
+                            <div className="order-item-more">+{order.items.length - 3}</div>
+                          )}
+                        </div>
+                        <div className="order-details">
+                          <span>{order.items.length} items</span>
+                          <span className="order-total">₹{order.total.toFixed(2)}</span>
+                        </div>
                       </div>
-                      <span className={`order-status ${order.status.toLowerCase().replace(' ', '-')}`}>
-                        {order.status}
-                      </span>
-                    </div>
-                    <div className="order-details">
-                      <span>{order.items} items</span>
-                      <span className="order-total">₹{order.total}</span>
-                    </div>
-                    <button className="btn btn-light">View Details</button>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            </div>
+            )}
 
-            <div className="profile-section">
-              <h2>Account Security</h2>
-              <div className="security-section">
-                <div className="security-item">
-                  <div className="security-info">
-                    <h3>Password</h3>
-                    <p>Last changed 3 months ago</p>
+            {activeTab === 'wishlist' && (
+              <div className="profile-section">
+                <h2>My Wishlist</h2>
+                {wishlist.length === 0 ? (
+                  <div className="empty-state">
+                    <i className="fa-solid fa-heart" style={{fontSize: '48px', color: 'var(--text-secondary)'}}></i>
+                    <p>Your wishlist is empty</p>
+                    <Link to="/books" className="btn btn-primary">Browse Books</Link>
                   </div>
-                  <button className="btn btn-outline">Change Password</button>
-                </div>
-                <div className="security-item">
-                  <div className="security-info">
-                    <h3>Two-Factor Authentication</h3>
-                    <p>Add an extra layer of security</p>
+                ) : (
+                  <div className="wishlist-grid">
+                    {wishlist.map(book => (
+                      <Link to={`/book/${book.id}`} key={book.id} className="wishlist-book-card">
+                        <img src={book.image} alt={book.title} />
+                        <div className="wishlist-book-info">
+                          <h4>{book.title}</h4>
+                          <p>{book.author}</p>
+                          <span className="price">₹{book.price}</span>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
-                  <button className="btn btn-outline">Enable</button>
-                </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

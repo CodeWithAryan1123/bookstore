@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrderContext';
 import './Cart.css';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
+  const { createOrder } = useOrders();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -33,7 +35,24 @@ const Cart = () => {
       navigate('/login');
       return;
     }
-    showToast('Checkout feature coming soon!');
+
+    try {
+      const order = createOrder({
+        items: cartItems,
+        subtotal,
+        tax,
+        shipping,
+        discount,
+        total,
+        paymentMethod: 'COD'
+      });
+
+      clearCart();
+      showToast('Order placed successfully!');
+      navigate('/profile?tab=orders');
+    } catch (error) {
+      showToast(error.message, 'error');
+    }
   };
 
   const showToast = (message, type = 'success') => {

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
@@ -11,31 +12,58 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
-    // Load cart from localStorage
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
+    if (user) {
+      loadUserData();
+    } else {
+      // Load guest cart/wishlist
+      const savedCart = localStorage.getItem('guestCart');
+      const savedWishlist = localStorage.getItem('guestWishlist');
+      
+      if (savedCart) setCartItems(JSON.parse(savedCart));
+      if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
     }
+  }, [user]);
 
-    const savedWishlist = localStorage.getItem('wishlist');
-    if (savedWishlist) {
-      setWishlist(JSON.parse(savedWishlist));
-    }
-  }, []);
+  const loadUserData = () => {
+    if (!user) return;
+
+    // Load user-specific cart
+    const allCarts = JSON.parse(localStorage.getItem('userCarts') || '{}');
+    const userCart = allCarts[user.id] || [];
+    setCartItems(userCart);
+
+    // Load user-specific wishlist
+    const allWishlists = JSON.parse(localStorage.getItem('userWishlists') || '{}');
+    const userWishlist = allWishlists[user.id] || [];
+    setWishlist(userWishlist);
+  };
 
   useEffect(() => {
-    // Save cart to localStorage whenever it changes
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    // Save cart whenever it changes
+    if (user) {
+      const allCarts = JSON.parse(localStorage.getItem('userCarts') || '{}');
+      allCarts[user.id] = cartItems;
+      localStorage.setItem('userCarts', JSON.stringify(allCarts));
+    } else {
+      localStorage.setItem('guestCart', JSON.stringify(cartItems));
+    }
+  }, [cartItems, user]);
 
   useEffect(() => {
-    // Save wishlist to localStorage whenever it changes
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+    // Save wishlist whenever it changes
+    if (user) {
+      const allWishlists = JSON.parse(localStorage.getItem('userWishlists') || '{}');
+      allWishlists[user.id] = wishlist;
+      localStorage.setItem('userWishlists', JSON.stringify(allWishlists));
+    } else {
+      localStorage.setItem('guestWishlist', JSON.stringify(wishlist));
+    }
+  }, [wishlist, user]);
 
   const addToCart = (book, quantity = 1) => {
     setCartItems(prevItems => {
