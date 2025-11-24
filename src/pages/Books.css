@@ -30,7 +30,28 @@
 .books-sidebar {
   position: sticky;
   top: 120px;
-  height: fit-content;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+.books-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.books-sidebar::-webkit-scrollbar-track {
+  background: var(--background);
+  border-radius: 3px;
+}
+
+.books-sidebar::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.books-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 
 .sidebar-section {
