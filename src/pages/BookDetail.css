@@ -403,12 +403,12 @@
 
 @media (max-width: 1024px) {
   .book-detail-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
   }
 
-  .book-detail-image-section {
-    position: static;
+  .book-detail-title {
+    font-size: 36px;
   }
 
   .delivery-info {
@@ -417,16 +417,98 @@
 }
 
 @media (max-width: 768px) {
+  .book-detail-page {
+    padding: 32px 0 60px;
+  }
+
+  .back-btn {
+    padding: 8px 16px;
+    margin-bottom: 24px;
+  }
+
+  .book-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  .book-detail-image-section {
+    position: static;
+  }
+
+  .book-category-badge {
+    font-size: 13px;
+    padding: 5px 14px;
+  }
+
   .book-detail-title {
-    font-size: 32px;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .book-detail-author {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .book-detail-rating {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+
+  .stars-large {
+    font-size: 18px;
+  }
+
+  .rating-text {
+    font-size: 14px;
+  }
+
+  .book-detail-price {
+    margin-bottom: 16px;
   }
 
   .book-detail-price .current-price {
     font-size: 32px;
   }
 
+  .book-detail-price .original-price {
+    font-size: 22px;
+  }
+
+  .save-badge {
+    font-size: 13px;
+  }
+
+  .quantity-section {
+    margin-bottom: 24px;
+  }
+
+  .quantity-section label {
+    font-size: 15px;
+  }
+
+  .quantity-controls button {
+    padding: 10px 16px;
+    font-size: 18px;
+  }
+
+  .quantity-display {
+    padding: 0 20px;
+    font-size: 16px;
+    min-width: 50px;
+  }
+
   .book-detail-actions {
     flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .btn-large {
+    padding: 14px 32px;
+    font-size: 16px;
+    width: 100%;
   }
 
   .book-actions-mobile {
@@ -436,9 +518,55 @@
 
   .tabs-header {
     flex-direction: column;
+    gap: 0;
+  }
+
+  .tab-btn {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab-btn:first-child {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+  }
+
+  .tab-btn:last-child {
+    border-bottom: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
   }
 
   .tabs-content {
-    padding: 24px;
+    padding: 20px;
+  }
+
+  .details-grid {
+    gap: 12px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .related-books h2 {
+    font-size: 24px;
   }
 }
+
+@media (max-width: 480px) {
+  .book-detail-title {
+    font-size: 24px;
+  }
+
+  .book-detail-price .current-price {
+    font-size: 28px;
+  }
+
+  .book-detail-price .original-price {
+    font-size: 20px;
+  }
+}
+

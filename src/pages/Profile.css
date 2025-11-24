@@ -455,3 +455,221 @@
   margin: 20px 0;
 }
 
+@media (max-width: 1024px) {
+  .profile-content {
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+  }
+
+  .profile-header {
+    padding: 48px 40px;
+  }
+
+  .profile-header-info h1 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 40px 0;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    padding: 32px 24px;
+    gap: 24px;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
+  }
+
+  .profile-header-info h1 {
+    font-size: 28px;
+  }
+
+  .profile-header-info > p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .profile-stats {
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-number {
+    font-size: 28px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+  }
+
+  .profile-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .profile-sidebar {
+    position: static;
+  }
+
+  .profile-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .profile-nav-btn {
+    padding: 10px 16px;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .logout-btn {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 10px;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  .profile-section {
+    padding: 24px 20px;
+  }
+
+  .profile-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .profile-form {
+    max-width: 100%;
+  }
+
+  .form-group input {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+  }
+
+  .order-card {
+    padding: 16px;
+  }
+
+  .order-header h3 {
+    font-size: 16px;
+  }
+
+  .order-date {
+    font-size: 13px;
+  }
+
+  .order-items {
+    gap: 12px;
+  }
+
+  .order-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .order-item-image {
+    width: 50px;
+    height: 70px;
+  }
+
+  .order-item h4 {
+    font-size: 14px;
+  }
+
+  .order-item p {
+    font-size: 12px;
+  }
+
+  .order-item .price {
+    font-size: 15px;
+  }
+
+  .order-total {
+    font-size: 16px;
+  }
+
+  .order-status {
+    font-size: 13px;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .wishlist-book-card img {
+    height: 200px;
+  }
+
+  .wishlist-book-info {
+    padding: 12px;
+  }
+
+  .wishlist-book-info h4 {
+    font-size: 14px;
+  }
+
+  .wishlist-book-info p {
+    font-size: 13px;
+  }
+
+  .wishlist-book-info .price {
+    font-size: 16px;
+  }
+
+  .empty-state {
+    padding: 40px 20px;
+  }
+
+  .empty-state p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-header-info h1 {
+    font-size: 24px;
+  }
+
+  .profile-stats {
+    gap: 24px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .profile-nav {
+    gap: 4px;
+  }
+
+  .profile-nav-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

@@ -65,6 +65,12 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -115,6 +121,18 @@ input, textarea {
   padding: 0 24px;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 12px;
+  }
+}
+
 .btn {
   padding: 12px 32px;
   border-radius: var(--border-radius-sm);
@@ -126,6 +144,30 @@ input, textarea {
   justify-content: center;
   gap: 8px;
   text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 11px 24px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
 }
 
 .btn-primary {

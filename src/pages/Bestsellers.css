@@ -98,6 +98,83 @@
   margin-bottom: 4px;
 }
 
+@media (max-width: 1024px) {
+  .bestsellers-stats {
+    grid-template-columns: repeat(2, 1fr);
+    margin: -40px 0 40px;
+  }
+
+  .stat-card {
+    padding: 24px 20px;
+  }
+
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 36px;
+  }
+
+  .stat-info h3 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bestsellers-hero {
+    padding: 60px 0;
+  }
+
+  .bestsellers-hero .page-title {
+    font-size: 36px;
+  }
+
+  .bestsellers-hero .page-subtitle {
+    font-size: 16px;
+  }
+
+  .hero-badge {
+    font-size: 14px;
+    padding: 8px 20px;
+    margin-bottom: 16px;
+  }
+
+  .bestsellers-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: -30px 16px 40px;
+  }
+
+  .stat-card {
+    padding: 20px;
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+  .stat-info h3 {
+    font-size: 24px;
+  }
+
+  .stat-info p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bestsellers-hero .page-title {
+    font-size: 32px;
+  }
+
+  .stat-info h3 {
+    font-size: 20px;
+  }
+}
+
 .stat-info p {
   color: var(--text-secondary);
   font-size: 14px;

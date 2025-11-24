@@ -191,15 +191,90 @@
 }
 
 @media (max-width: 768px) {
-  .book-title {
-    font-size: 16px;
+  .book-card {
+    transition: transform 0.2s;
   }
 
-  .current-price {
-    font-size: 20px;
+  .book-card:hover {
+    transform: translateY(-6px) scale(1.01);
+  }
+
+  .badge-bestseller,
+  .badge-discount {
+    font-size: 11px;
+    padding: 5px 10px;
   }
 
   .book-info {
     padding: 16px;
+    gap: 6px;
+  }
+
+  .book-title {
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+
+  .book-author {
+    font-size: 13px;
+  }
+
+  .book-rating {
+    gap: 6px;
+    margin: 6px 0;
+  }
+
+  .stars {
+    font-size: 13px;
+  }
+
+  .reviews {
+    font-size: 12px;
+  }
+
+  .book-footer {
+    padding-top: 10px;
+  }
+
+  .current-price {
+    font-size: 18px;
+  }
+
+  .original-price {
+    font-size: 14px;
+  }
+
+  .book-category {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .book-overlay {
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .overlay-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-title {
+    font-size: 14px;
+  }
+
+  .current-price {
+    font-size: 16px;
+  }
+
+  .book-overlay {
+    opacity: 0.95;
+  }
+
+  .book-card:active .book-overlay {
+    opacity: 1;
   }
 }
