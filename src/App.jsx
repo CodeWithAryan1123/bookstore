@@ -15,6 +15,11 @@ import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import Bestsellers from './pages/Bestsellers';
 import Checkout from './pages/Checkout';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
+import Shipping from './pages/Shipping';
+import Returns from './pages/Returns';
 
 function App() {
   return (
@@ -37,6 +42,11 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/orders" element={<Profile />} />
                   <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/shipping" element={<Shipping />} />
+                  <Route path="/returns" element={<Returns />} />
                 </Routes>
               </main>
               <Footer />

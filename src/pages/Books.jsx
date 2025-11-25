@@ -96,33 +96,195 @@ const Books = () => {
             <div className="sidebar-section">
               <h3 className="sidebar-title">Price Range</h3>
               <div className="price-range">
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="1000" 
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                />
+                <div className="price-preset-buttons">
+                  <button 
+                    className={`price-preset-btn ${priceRange[0] === 0 && priceRange[1] === 1000 ? 'active' : ''}`}
+                    onClick={() => setPriceRange([0, 1000])}
+                  >
+                    All Prices
+                  </button>
+                  <button 
+                    className={`price-preset-btn ${priceRange[0] === 0 && priceRange[1] === 200 ? 'active' : ''}`}
+                    onClick={() => setPriceRange([0, 200])}
+                  >
+                    Under ₹200
+                  </button>
+                  <button 
+                    className={`price-preset-btn ${priceRange[0] === 0 && priceRange[1] === 500 ? 'active' : ''}`}
+                    onClick={() => setPriceRange([0, 500])}
+                  >
+                    Under ₹500
+                  </button>
+                  <button 
+                    className={`price-preset-btn ${priceRange[0] === 500 && priceRange[1] === 1000 ? 'active' : ''}`}
+                    onClick={() => setPriceRange([500, 1000])}
+                  >
+                    ₹500 - ₹1000
+                  </button>
+                </div>
+                
+                <div className="dual-range-slider">
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1000" 
+                    step="50"
+                    value={priceRange[0]}
+                    onChange={(e) => {
+                      const newMin = parseInt(e.target.value);
+                      if (newMin < priceRange[1]) {
+                        setPriceRange([newMin, priceRange[1]]);
+                      }
+                    }}
+                    className="range-min"
+                  />
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1000" 
+                    step="50"
+                    value={priceRange[1]}
+                    onChange={(e) => {
+                      const newMax = parseInt(e.target.value);
+                      if (newMax > priceRange[0]) {
+                        setPriceRange([priceRange[0], newMax]);
+                      }
+                    }}
+                    className="range-max"
+                  />
+                  <div className="slider-track">
+                    <div 
+                      className="slider-range" 
+                      style={{
+                        left: `${(priceRange[0] / 1000) * 100}%`,
+                        width: `${((priceRange[1] - priceRange[0]) / 1000) * 100}%`
+                      }}
+                    ></div>
+                  </div>
+                </div>
+                
                 <div className="price-labels">
-                  <span>₹{priceRange[0]}</span>
-                  <span>₹{priceRange[1]}</span>
+                  <div className="price-input-group">
+                    <label>Min</label>
+                    <input 
+                      type="number" 
+                      min="0" 
+                      max={priceRange[1]}
+                      value={priceRange[0]}
+                      onChange={(e) => {
+                        const newMin = parseInt(e.target.value) || 0;
+                        if (newMin < priceRange[1]) {
+                          setPriceRange([newMin, priceRange[1]]);
+                        }
+                      }}
+                      className="price-input"
+                    />
+                  </div>
+                  <span className="price-separator">—</span>
+                  <div className="price-input-group">
+                    <label>Max</label>
+                    <input 
+                      type="number" 
+                      min={priceRange[0]} 
+                      max="1000"
+                      value={priceRange[1]}
+                      onChange={(e) => {
+                        const newMax = parseInt(e.target.value) || 1000;
+                        if (newMax > priceRange[0]) {
+                          setPriceRange([priceRange[0], newMax]);
+                        }
+                      }}
+                      className="price-input"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="sidebar-section">
-              <h3 className="sidebar-title">Rating</h3>
+              <h3 className="sidebar-title">Customer Rating</h3>
               <div className="rating-filters">
-                {[5, 4, 3].map(rating => (
+                <div className="rating-summary">
+                  <div className="rating-summary-main">
+                    <span className="rating-number">
+                      {minRating > 0 ? `${minRating}.0+` : 'All'}
+                    </span>
+                    <div className="rating-stars-display">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <span 
+                          key={star} 
+                          className={`star-icon ${star <= minRating ? 'filled' : ''}`}
+                        >
+                          {star <= minRating ? '★' : '☆'}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {minRating > 0 && (
+                    <button 
+                      className="clear-rating-btn"
+                      onClick={() => setMinRating(0)}
+                      title="Clear rating filter"
+                    >
+                      <i className="fa-solid fa-xmark"></i>
+                    </button>
+                  )}
+                </div>
+
+                <div className="rating-options">
+                  {[5, 4, 3, 2, 1].map(rating => {
+                    const count = booksData.filter(b => Math.floor(b.rating) === rating).length;
+                    return (
+                      <button 
+                        key={rating} 
+                        className={`rating-option-btn ${minRating === rating ? 'active' : ''}`}
+                        onClick={() => setMinRating(minRating === rating ? 0 : rating)}
+                      >
+                        <div className="rating-option-left">
+                          <span className="rating-stars">
+                            {[1, 2, 3, 4, 5].map(star => (
+                              <span 
+                                key={star} 
+                                className={star <= rating ? 'filled' : 'empty'}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </span>
+                          <span className="rating-text">
+                            {rating === 5 ? 'Perfect' : rating === 4 ? 'Excellent' : rating === 3 ? 'Good' : rating === 2 ? 'Fair' : 'Any'}
+                          </span>
+                        </div>
+                        <div className="rating-option-right">
+                          <span className="rating-count">{count}</span>
+                          <div className="rating-bar">
+                            <div 
+                              className="rating-bar-fill" 
+                              style={{width: `${(count / booksData.length) * 100}%`}}
+                            ></div>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="rating-quick-filters">
                   <button 
-                    key={rating} 
-                    className={`rating-filter-btn ${minRating === rating ? 'active' : ''}`}
-                    onClick={() => setMinRating(minRating === rating ? 0 : rating)}
+                    className={`quick-filter-chip ${minRating >= 4 ? 'active' : ''}`}
+                    onClick={() => setMinRating(minRating >= 4 ? 0 : 4)}
                   >
-                    <span className="stars">{'⭐'.repeat(rating)}</span>
-                    <span>& Up</span>
+                    <i className="fa-solid fa-award"></i>
+                    Top Rated
                   </button>
-                ))}
+                  <button 
+                    className={`quick-filter-chip ${minRating === 0 ? 'active' : ''}`}
+                    onClick={() => setMinRating(0)}
+                  >
+                    <i className="fa-solid fa-globe"></i>
+                    All Ratings
+                  </button>
+                </div>
               </div>
             </div>
 

@@ -1,0 +1,251 @@
+.shipping-page {
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+.shipping-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.shipping-hero h1 {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.shipping-hero p {
+  font-size: 18px;
+  opacity: 0.95;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.shipping-content {
+  margin-top: -40px;
+  padding: 0 20px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+}
+
+.shipping-options h2,
+.shipping-info-section h2 {
+  font-size: 28px;
+  color: var(--primary-dark);
+  margin-bottom: 24px;
+}
+
+.option-card {
+  background: var(--surface);
+  padding: 24px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 20px;
+  transition: var(--transition);
+  border: 2px solid transparent;
+}
+
+.option-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.option-header i {
+  font-size: 32px;
+  color: var(--primary);
+}
+
+.option-header h3 {
+  font-size: 22px;
+  color: var(--primary-dark);
+}
+
+.option-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.delivery-time {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.shipping-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-box {
+  background: var(--surface);
+  padding: 28px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+}
+
+.info-box h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.info-box p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.info-box ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-box li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.info-box li i {
+  color: var(--primary);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.info-box.highlight {
+  background: linear-gradient(135deg, var(--primary-light), var(--surface));
+  border: 2px solid var(--primary);
+}
+
+.promo-banner {
+  background: var(--primary);
+  color: white;
+  padding: 16px 20px;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.promo-banner i {
+  font-size: 24px;
+}
+
+.faq-section {
+  background: var(--surface);
+  padding: 48px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.faq-section h2 {
+  font-size: 32px;
+  color: var(--primary-dark);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.faq-item {
+  background: var(--background);
+  padding: 24px;
+  border-radius: var(--border-radius-sm);
+  border: 2px solid var(--border);
+  transition: var(--transition);
+}
+
+.faq-item:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.faq-item h3 {
+  font-size: 18px;
+  color: var(--primary-dark);
+  margin-bottom: 12px;
+}
+
+.faq-item p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .shipping-hero h1 {
+    font-size: 36px;
+  }
+
+  .shipping-hero p {
+    font-size: 16px;
+  }
+
+  .option-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .faq-section {
+    padding: 32px 24px;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-box {
+    padding: 20px;
+  }
+}
