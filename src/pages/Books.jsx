@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import BookCard from '../components/BookCard';
 import { booksData, categories } from '../data/books';
 import './Books.css';
@@ -11,6 +11,16 @@ const Books = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [minRating, setMinRating] = useState(0);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({
+    author: '',
+    yearFrom: '',
+    yearTo: '',
+    language: 'all',
+    inStock: false
+  });
+  const [compareList, setCompareList] = useState([]);
+  const [showCompareModal, setShowCompareModal] = useState(false);
 
   // Update search query from URL params
   useEffect(() => {
@@ -32,7 +42,15 @@ const Books = () => {
                           book.author.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesPrice = book.price >= priceRange[0] && book.price <= priceRange[1];
     const matchesRating = book.rating >= minRating;
-    return matchesCategory && matchesSearch && matchesPrice && matchesRating;
+    
+    // Advanced filters
+    const matchesAuthor = !advancedFilters.author || 
+                         book.author.toLowerCase().includes(advancedFilters.author.toLowerCase());
+    const matchesLanguage = advancedFilters.language === 'all' || 
+                           (book.language || 'English') === advancedFilters.language;
+    
+    return matchesCategory && matchesSearch && matchesPrice && matchesRating && 
+           matchesAuthor && matchesLanguage;
   });
 
   const sortedBooks = [...filteredBooks].sort((a, b) => {
@@ -49,6 +67,31 @@ const Books = () => {
         return 0;
     }
   });
+
+  const handleCompareToggle = (book) => {
+    if (compareList.find(b => b.id === book.id)) {
+      setCompareList(compareList.filter(b => b.id !== book.id));
+    } else if (compareList.length < 4) {
+      setCompareList([...compareList, book]);
+    } else {
+      alert('You can compare up to 4 books at a time');
+    }
+  };
+
+  const clearCompare = () => {
+    setCompareList([]);
+    setShowCompareModal(false);
+  };
+
+  const resetAdvancedFilters = () => {
+    setAdvancedFilters({
+      author: '',
+      yearFrom: '',
+      yearTo: '',
+      language: 'all',
+      inStock: false
+    });
+  };
 
   return (
     <div className="books-page">
@@ -73,6 +116,48 @@ const Books = () => {
                 />
                 <button className="search-icon"><i className="fa-solid fa-magnifying-glass"></i></button>
               </div>
+              <button 
+                className="advanced-search-toggle"
+                onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              >
+                <i className="fa-solid fa-sliders"></i>
+                {showAdvancedSearch ? 'Hide' : 'Show'} Advanced Filters
+              </button>
+
+              {showAdvancedSearch && (
+                <div className="advanced-search-panel">
+                  <div className="advanced-filter-group">
+                    <label>Author Name</label>
+                    <input
+                      type="text"
+                      placeholder="Search by author..."
+                      value={advancedFilters.author}
+                      onChange={(e) => setAdvancedFilters({...advancedFilters, author: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="advanced-filter-group">
+                    <label>Language</label>
+                    <select
+                      value={advancedFilters.language}
+                      onChange={(e) => setAdvancedFilters({...advancedFilters, language: e.target.value})}
+                    >
+                      <option value="all">All Languages</option>
+                      <option value="English">English</option>
+                      <option value="Hindi">Hindi</option>
+                      <option value="Spanish">Spanish</option>
+                      <option value="French">French</option>
+                    </select>
+                  </div>
+
+                  <button 
+                    className="reset-filters-btn"
+                    onClick={resetAdvancedFilters}
+                  >
+                    <i className="fa-solid fa-rotate-right"></i> Reset Filters
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="sidebar-section">
@@ -311,22 +396,39 @@ const Books = () => {
                 <h2>{selectedCategory === 'All' ? 'All Books' : `${selectedCategory} Books`}</h2>
                 <p>{sortedBooks.length} books found</p>
               </div>
-              <div className="sort-controls">
-                <label>Sort by:</label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="featured">Featured</option>
-                  <option value="name">Name (A-Z)</option>
-                  <option value="price-low">Price (Low to High)</option>
-                  <option value="price-high">Price (High to Low)</option>
-                  <option value="rating">Rating</option>
-                </select>
+              <div className="toolbar-actions">
+                {compareList.length > 0 && (
+                  <button 
+                    className="compare-btn"
+                    onClick={() => setShowCompareModal(true)}
+                  >
+                    <i className="fa-solid fa-code-compare"></i>
+                    Compare ({compareList.length})
+                  </button>
+                )}
+                <div className="sort-controls">
+                  <label>Sort by:</label>
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <option value="featured">Featured</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="price-low">Price (Low to High)</option>
+                    <option value="price-high">Price (High to Low)</option>
+                    <option value="rating">Rating</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             {sortedBooks.length > 0 ? (
               <div className="books-grid">
                 {sortedBooks.map(book => (
-                  <BookCard key={book.id} book={book} />
+                  <div key={book.id} className="book-card-wrapper">
+                    <BookCard 
+                      book={book} 
+                      onCompareToggle={handleCompareToggle}
+                      isInCompare={!!compareList.find(b => b.id === book.id)}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -339,6 +441,118 @@ const Books = () => {
           </div>
         </div>
       </div>
+
+      {/* Compare Modal */}
+      {showCompareModal && compareList.length > 0 && (
+        <div className="compare-modal-overlay" onClick={() => setShowCompareModal(false)}>
+          <div className="compare-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="compare-modal-header">
+              <h2>
+                <i className="fa-solid fa-code-compare"></i>
+                Compare Books ({compareList.length})
+              </h2>
+              <button className="close-modal" onClick={() => setShowCompareModal(false)}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div className="compare-table-wrapper">
+              <table className="compare-table">
+                <thead>
+                  <tr>
+                    <th className="feature-column">Feature</th>
+                    {compareList.map(book => (
+                      <th key={book.id} className="book-column">
+                        <div className="compare-book-header">
+                          <img src={book.image} alt={book.title} />
+                          <button 
+                            className="remove-compare"
+                            onClick={() => handleCompareToggle(book)}
+                            title="Remove from comparison"
+                          >
+                            <i className="fa-solid fa-xmark"></i>
+                          </button>
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="feature-label">Title</td>
+                    {compareList.map(book => (
+                      <td key={book.id}>
+                        <Link to={`/book/${book.id}`} className="book-title-link">
+                          {book.title}
+                        </Link>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="feature-label">Author</td>
+                    {compareList.map(book => (
+                      <td key={book.id}>{book.author}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="feature-label">Price</td>
+                    {compareList.map(book => (
+                      <td key={book.id} className="price-cell">
+                        <span className="compare-price">₹{book.price}</span>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="feature-label">Rating</td>
+                    {compareList.map(book => (
+                      <td key={book.id}>
+                        <span className="rating-display">
+                          ⭐ {book.rating} / 5
+                        </span>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="feature-label">Category</td>
+                    {compareList.map(book => (
+                      <td key={book.id}>
+                        <span className="category-badge">{book.category}</span>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="feature-label">Description</td>
+                    {compareList.map(book => (
+                      <td key={book.id} className="description-cell">
+                        {book.description}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="feature-label">Action</td>
+                    {compareList.map(book => (
+                      <td key={book.id}>
+                        <Link to={`/book/${book.id}`} className="btn btn-primary btn-sm">
+                          View Details
+                        </Link>
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="compare-modal-footer">
+              <button className="btn btn-secondary" onClick={clearCompare}>
+                <i className="fa-solid fa-trash"></i> Clear All
+              </button>
+              <button className="btn btn-primary" onClick={() => setShowCompareModal(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

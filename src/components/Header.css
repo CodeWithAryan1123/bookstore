@@ -125,7 +125,7 @@
   align-items: center;
   background: var(--background);
   border-radius: var(--border-radius-sm);
-  padding: 8px 16px;
+  padding: 6px 14px;
   gap: 8px;
   border: 2px solid var(--border);
   transition: var(--transition);
@@ -139,7 +139,7 @@
   border: none;
   background: var(--background);
   outline: none;
-  width: 200px;
+  width: 280px;
   color: var(--text-primary);
 }
 
@@ -147,10 +147,9 @@
   color: var(--text-secondary);
 }
 
-.search-btn {
-  background: none;
-  font-size: 18px;
-  padding: 0;
+.search-icon {
+  color: var(--text-secondary);
+  font-size: 16px;
 }
 
 .icon-btn {

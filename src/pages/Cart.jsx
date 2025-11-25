@@ -12,9 +12,43 @@ const Cart = () => {
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
+  const [selectedShipping, setSelectedShipping] = useState('standard');
+
+  const shippingOptions = [
+    {
+      id: 'standard',
+      name: 'Standard Shipping',
+      time: '5-7 Business Days',
+      price: 49,
+      icon: 'fa-truck',
+      condition: 'Free on orders over ₹999'
+    },
+    {
+      id: 'express',
+      name: 'Express Shipping',
+      time: '2-3 Business Days',
+      price: 299,
+      icon: 'fa-truck-fast'
+    },
+    {
+      id: 'same-day',
+      name: 'Same-Day Delivery',
+      time: 'Within 24 Hours',
+      price: 499,
+      icon: 'fa-bolt',
+      condition: 'Available in select metro areas'
+    }
+  ];
 
   const subtotal = getCartTotal();
-  const shipping = subtotal > 999 ? 0 : 49;
+  const getShippingCost = () => {
+    const option = shippingOptions.find(opt => opt.id === selectedShipping);
+    if (selectedShipping === 'standard' && subtotal > 999) {
+      return 0;
+    }
+    return option.price;
+  };
+  const shipping = getShippingCost();
   const total = subtotal + shipping - discount;
 
   const applyCoupon = () => {
@@ -121,6 +155,39 @@ const Cart = () => {
             <div className="cart-summary">
               <h2>Order Summary</h2>
               
+              <div className="delivery-options-section">
+                <h3>Select Delivery Option</h3>
+                <div className="delivery-options">
+                  {shippingOptions.map(option => (
+                    <div 
+                      key={option.id}
+                      className={`delivery-option ${selectedShipping === option.id ? 'selected' : ''}`}
+                      onClick={() => setSelectedShipping(option.id)}
+                    >
+                      <div className="delivery-option-header">
+                        <i className={`fa-solid ${option.icon}`}></i>
+                        <div className="delivery-option-info">
+                          <h4>{option.name}</h4>
+                          <p className="delivery-time">{option.time}</p>
+                        </div>
+                      </div>
+                      <div className="delivery-option-price">
+                        {option.id === 'standard' && subtotal > 999 ? (
+                          <span className="free-badge">FREE</span>
+                        ) : option.id === 'standard' ? (
+                          <span className="price-badge">₹{option.price}</span>
+                        ) : (
+                          <span className="price-badge">₹{option.price}</span>
+                        )}
+                      </div>
+                      {option.condition && (
+                        <p className="delivery-condition">{option.condition}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="coupon-section">
                 <input
                   type="text"

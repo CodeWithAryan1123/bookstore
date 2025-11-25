@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import './BookCard.css';
 
-const BookCard = ({ book }) => {
+const BookCard = ({ book, onCompareToggle, isInCompare }) => {
   const { addToCart, addToWishlist, isInWishlist } = useCart();
   const navigate = useNavigate();
 
@@ -50,7 +50,21 @@ const BookCard = ({ book }) => {
       </div>
 
       <div className="book-info">
-        <h3 className="book-title">{book.title}</h3>
+        <div className="book-title-row">
+          <h3 className="book-title">{book.title}</h3>
+          {onCompareToggle && (
+            <button
+              className={`add-to-compare-btn ${isInCompare ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onCompareToggle(book);
+              }}
+              title={isInCompare ? "Remove from compare" : "Add to compare"}
+            >
+              <i className={`fa-solid ${isInCompare ? 'fa-check-circle' : 'fa-plus-circle'}`}></i>
+            </button>
+          )}
+        </div>
         <p className="book-author">by {book.author}</p>
         
         <div className="book-rating">

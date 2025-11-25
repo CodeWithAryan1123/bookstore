@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: #f5f5f5;
+  background: var(--background);
 }
 
 .auth-container {
@@ -55,7 +55,7 @@
   padding: 60px 50px;
   display: flex;
   align-items: center;
-  background: white;
+  background: var(--surface);
 }
 
 .auth-form-wrapper {
@@ -71,7 +71,7 @@
   font-size: 22px;
   font-weight: 700;
   font-family: 'Playfair Display', serif;
-  color: #1a1a1a;
+  color: var(--text-primary);
   text-decoration: none;
   margin-bottom: 40px;
 }
@@ -84,11 +84,11 @@
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 8px;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .auth-subtitle {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 32px;
   font-size: 14px;
 }
@@ -127,28 +127,29 @@
 
 .form-group label {
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .form-group input {
   padding: 12px 16px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 15px;
   transition: var(--transition);
   outline: none;
-  background: #fafafa;
+  background: var(--background);
+  color: var(--text-primary);
 }
 
 .form-group input:focus {
   border-color: #2d6a6a;
-  background: white;
+  background: var(--surface);
   box-shadow: 0 0 0 3px rgba(45, 106, 106, 0.1);
 }
 
 .form-group input::placeholder {
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .form-options {
@@ -164,7 +165,7 @@
   gap: 8px;
   font-size: 14px;
   cursor: pointer;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .checkbox-label input {
@@ -174,7 +175,7 @@
 }
 
 .forgot-link {
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
   transition: var(--transition);
@@ -190,14 +191,14 @@
   font-size: 16px;
   font-weight: 600;
   margin-top: 8px;
-  background: #000;
-  color: white;
+  background: var(--primary);
+  color: var(--background);
   border-radius: 8px;
   transition: var(--transition);
 }
 
 .auth-btn:hover {
-  background: #1a1a1a;
+  opacity: 0.9;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -221,13 +222,13 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: #e0e0e0;
+  background: var(--border);
 }
 
 .auth-divider span {
-  background: white;
+  background: var(--surface);
   padding: 0 16px;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 13px;
   position: relative;
   z-index: 1;
@@ -241,9 +242,10 @@
 
 .social-btn {
   padding: 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: white;
+  background: var(--surface);
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 14px;
   transition: var(--transition);
@@ -251,11 +253,11 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #1a1a1a;
 }
 
 .social-btn:hover {
   border-color: #2d6a6a;
+  background: var(--background);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -275,12 +277,12 @@
 .auth-switch {
   text-align: center;
   margin-top: 28px;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .auth-switch a {
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-weight: 700;
   transition: var(--transition);
 }

@@ -39,7 +39,7 @@ const Checkout = () => {
   
   // Calculate totals
   const subtotal = cartTotal;
-  const shipping = subtotal >= 999 ? 0 : 50;
+  const shipping = subtotal >= 999 ? 0 : 49;
   const total = subtotal + shipping - discount;
   
   const handleAddressChange = (e) => {

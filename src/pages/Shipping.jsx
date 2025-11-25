@@ -24,7 +24,7 @@ const Shipping = () => {
                 </div>
                 <div className="option-details">
                   <p className="delivery-time">5-7 Business Days</p>
-                  <p className="price">Free on orders over $50</p>
+                  <p className="price">Free on orders over ₹999</p>
                   <p className="description">Our standard shipping option is reliable and cost-effective for most orders.</p>
                 </div>
               </div>
@@ -36,7 +36,7 @@ const Shipping = () => {
                 </div>
                 <div className="option-details">
                   <p className="delivery-time">2-3 Business Days</p>
-                  <p className="price">$15.00</p>
+                  <p className="price">₹299</p>
                   <p className="description">Need your books quickly? Choose express shipping for faster delivery.</p>
                 </div>
               </div>
@@ -60,7 +60,7 @@ const Shipping = () => {
                 </div>
                 <div className="option-details">
                   <p className="delivery-time">Within 24 Hours</p>
-                  <p className="price">$25.00</p>
+                  <p className="price">₹499</p>
                   <p className="description">Available in select metro areas. Order before 2 PM for same-day delivery.</p>
                 </div>
               </div>
@@ -137,10 +137,10 @@ const Shipping = () => {
 
               <div className="info-box highlight">
                 <h2>Free Shipping</h2>
-                <p>Enjoy free standard shipping on orders over $50! Applied automatically at checkout.</p>
+                <p>Enjoy free standard shipping on orders over ₹999! Applied automatically at checkout.</p>
                 <div className="promo-banner">
                   <i className="fa-solid fa-gift"></i>
-                  <span>Free shipping on all orders over $50</span>
+                  <span>Free shipping on all orders over ₹999</span>
                 </div>
               </div>
             </div>

@@ -69,15 +69,13 @@ const Header = () => {
 
             <div className="navbar-right">
               <form onSubmit={handleSearch} className="search-box">
+                <i className="fa-solid fa-magnifying-glass search-icon"></i>
                 <input 
                   type="text" 
                   placeholder="Search books..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="search-btn">
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </button>
               </form>
 
               <div className="desktop-actions">
