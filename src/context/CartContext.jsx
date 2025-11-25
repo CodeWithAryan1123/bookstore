@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { showToast } from '../utils/toast';
 
 const CartContext = createContext();
 
@@ -66,15 +67,27 @@ export const CartProvider = ({ children }) => {
   }, [wishlist, user]);
 
   const addToCart = (book, quantity = 1) => {
+    const MAX_QUANTITY = 10; // Maximum quantity per book
+    
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === book.id);
       
       if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        if (newQuantity > MAX_QUANTITY) {
+          showToast(`Maximum quantity of ${MAX_QUANTITY} per item`, 'error');
+          return prevItems;
+        }
         return prevItems.map(item =>
           item.id === book.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: newQuantity }
             : item
         );
+      }
+      
+      if (quantity > MAX_QUANTITY) {
+        showToast(`Maximum quantity of ${MAX_QUANTITY} per item`, 'error');
+        return prevItems;
       }
       
       return [...prevItems, { ...book, quantity }];
@@ -86,8 +99,15 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (bookId, quantity) => {
+    const MAX_QUANTITY = 10;
+    
     if (quantity <= 0) {
       removeFromCart(bookId);
+      return;
+    }
+
+    if (quantity > MAX_QUANTITY) {
+      showToast(`Maximum quantity of ${MAX_QUANTITY} per item`, 'error');
       return;
     }
 

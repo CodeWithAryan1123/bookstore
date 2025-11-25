@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { OrderProvider } from './context/OrderContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -20,11 +21,13 @@ import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import Shipping from './pages/Shipping';
 import Returns from './pages/Returns';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthProvider>
+    <ErrorBoundary>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
         <CartProvider>
           <OrderProvider>
             <div className="app">
@@ -47,6 +50,7 @@ function App() {
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/shipping" element={<Shipping />} />
                   <Route path="/returns" element={<Returns />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
               <Footer />
@@ -55,6 +59,7 @@ function App() {
         </CartProvider>
       </AuthProvider>
     </Router>
+    </ErrorBoundary>
   );
 }
 

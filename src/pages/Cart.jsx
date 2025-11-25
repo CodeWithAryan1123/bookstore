@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useOrders } from '../context/OrderContext';
+import { showToast } from '../utils/toast';
 import './Cart.css';
 
 const Cart = () => {
@@ -70,14 +71,6 @@ const Cart = () => {
     }
 
     navigate('/checkout');
-  };
-
-  const showToast = (message, type = 'success') => {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
   };
 
   if (cartItems.length === 0) {

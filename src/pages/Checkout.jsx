@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useOrders } from '../context/OrderContext';
+import { validatePhone, validatePincode } from '../utils/validation';
+import { showToast } from '../utils/toast';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -29,6 +31,31 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
+  const [selectedShipping, setSelectedShipping] = useState('standard');
+
+  const shippingOptions = [
+    {
+      id: 'standard',
+      name: 'Standard Shipping',
+      time: '5-7 Business Days',
+      price: 49,
+      icon: 'fa-truck'
+    },
+    {
+      id: 'express',
+      name: 'Express Shipping',
+      time: '2-3 Business Days',
+      price: 299,
+      icon: 'fa-truck-fast'
+    },
+    {
+      id: 'same-day',
+      name: 'Same-Day Delivery',
+      time: 'Within 24 Hours',
+      price: 499,
+      icon: 'fa-bolt'
+    }
+  ];
   
   // Redirect if cart is empty
   useEffect(() => {
@@ -39,7 +66,14 @@ const Checkout = () => {
   
   // Calculate totals
   const subtotal = cartTotal;
-  const shipping = subtotal >= 999 ? 0 : 49;
+  const getShippingCost = () => {
+    const option = shippingOptions.find(opt => opt.id === selectedShipping);
+    if (selectedShipping === 'standard' && subtotal >= 999) {
+      return 0;
+    }
+    return option.price;
+  };
+  const shipping = getShippingCost();
   const total = subtotal + shipping - discount;
   
   const handleAddressChange = (e) => {
@@ -53,12 +87,12 @@ const Checkout = () => {
   const handleApplyCoupon = () => {
     if (couponCode.toUpperCase() === 'BOOK10') {
       setDiscount(subtotal * 0.1);
-      alert('Coupon applied! 10% discount');
+      showToast('Coupon applied! 10% discount', 'success');
     } else if (couponCode.toUpperCase() === 'FIRSTORDER') {
       setDiscount(100);
-      alert('Coupon applied! ₹100 discount');
+      showToast('Coupon applied! ₹100 discount', 'success');
     } else {
-      alert('Invalid coupon code');
+      showToast('Invalid coupon code', 'error');
       setDiscount(0);
     }
   };
@@ -66,17 +100,17 @@ const Checkout = () => {
   const validateAddress = () => {
     if (!addressForm.name || !addressForm.phone || !addressForm.address1 || 
         !addressForm.city || !addressForm.state || !addressForm.pincode) {
-      alert('Please fill all required fields');
+      showToast('Please fill all required fields', 'error');
       return false;
     }
     
-    if (addressForm.phone.length !== 10) {
-      alert('Please enter a valid 10-digit phone number');
+    if (!validatePhone(addressForm.phone)) {
+      showToast('Please enter a valid 10-digit Indian mobile number (starting with 6-9)', 'error');
       return false;
     }
     
-    if (addressForm.pincode.length !== 6) {
-      alert('Please enter a valid 6-digit pincode');
+    if (!validatePincode(addressForm.pincode)) {
+      showToast('Please enter a valid 6-digit Indian pincode', 'error');
       return false;
     }
     
@@ -107,7 +141,6 @@ const Checkout = () => {
 
   const handlePlaceOrder = (status = 'success', paymentDetails = null) => {
     setIsProcessing(true);
-    console.log('Placing order...');
     
     const orderData = {
       subtotal,
@@ -121,7 +154,6 @@ const Checkout = () => {
     };
 
     const order = placeOrder(cart, orderData);
-    console.log('Order placed:', order);
     
     if (order) {
       clearCart();
@@ -130,7 +162,6 @@ const Checkout = () => {
       setTimeout(() => {
         setIsProcessing(false);
         setShowSuccessModal(true);
-        console.log('Success modal should be visible now');
         
         // Navigate to orders after 3 seconds
         setTimeout(() => {
@@ -429,6 +460,34 @@ const Checkout = () => {
                 ))}
               </div>
               
+              <div className="shipping-selection">
+                <h4>Select Shipping Method</h4>
+                <div className="shipping-options-checkout">
+                  {shippingOptions.map(option => (
+                    <div 
+                      key={option.id}
+                      className={`shipping-option-checkout ${selectedShipping === option.id ? 'selected' : ''}`}
+                      onClick={() => setSelectedShipping(option.id)}
+                    >
+                      <div className="shipping-option-info">
+                        <i className={`fa-solid ${option.icon}`}></i>
+                        <div>
+                          <strong>{option.name}</strong>
+                          <p>{option.time}</p>
+                        </div>
+                      </div>
+                      <div className="shipping-option-cost">
+                        {option.id === 'standard' && subtotal >= 999 ? (
+                          <span className="free-text">FREE</span>
+                        ) : (
+                          <span>₹{option.price}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="coupon-section">
                 <input
                   type="text"

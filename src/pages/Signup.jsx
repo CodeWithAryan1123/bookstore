@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail, validatePassword, validateName, sanitizeInput, getPasswordStrength } from '../utils/validation';
 import './Login.css';
 
 const Signup = () => {
@@ -12,38 +13,67 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(null);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+
+    // Track password strength
+    if (name === 'password') {
+      if (value) {
+        setPasswordStrength(getPasswordStrength(value));
+      } else {
+        setPasswordStrength(null);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    // Validate name
+    if (!validateName(formData.name)) {
+      setError('Please enter a valid name (2-50 characters, letters only)');
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    // Validate email
+    if (!validateEmail(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.errors[0]);
+      return;
+    }
+
+    // Check password confirmation
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
     setLoading(true);
 
     try {
-      signup({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      });
+      // Sanitize inputs
+      const sanitizedData = {
+        name: sanitizeInput(formData.name),
+        email: sanitizeInput(formData.email),
+        password: formData.password // Don't sanitize password as it may contain special chars
+      };
+
+      signup(sanitizedData);
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -109,9 +139,25 @@ const Signup = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="At least 6 characters"
+                  placeholder="Min 8 chars, 1 uppercase, 1 number, 1 special char"
                   required
                 />
+                {passwordStrength && (
+                  <div className="password-strength">
+                    <div className="strength-bar">
+                      <div 
+                        className="strength-fill" 
+                        style={{
+                          width: passwordStrength.level === 'weak' ? '33%' : passwordStrength.level === 'medium' ? '66%' : '100%',
+                          backgroundColor: passwordStrength.color
+                        }}
+                      ></div>
+                    </div>
+                    <span className="strength-text" style={{ color: passwordStrength.color }}>
+                      {passwordStrength.level.charAt(0).toUpperCase() + passwordStrength.level.slice(1)} password
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="form-group">

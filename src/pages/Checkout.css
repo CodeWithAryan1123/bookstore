@@ -363,6 +363,85 @@
   white-space: nowrap;
 }
 
+/* Shipping Selection */
+.shipping-selection {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.shipping-selection h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.shipping-options-checkout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shipping-option-checkout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--background);
+}
+
+.shipping-option-checkout:hover {
+  border-color: var(--primary);
+}
+
+.shipping-option-checkout.selected {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.shipping-option-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.shipping-option-info i {
+  font-size: 18px;
+  color: var(--primary);
+  width: 24px;
+  text-align: center;
+}
+
+.shipping-option-info strong {
+  display: block;
+  font-size: 13px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.shipping-option-info p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.shipping-option-cost {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.shipping-option-cost .free-text {
+  color: #10b981;
+  font-weight: 700;
+}
+
 /* Coupon Section */
 .coupon-section {
   display: flex;

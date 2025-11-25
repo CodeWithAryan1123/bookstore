@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail, sanitizeInput } from '../utils/validation';
 import './Login.css';
 
 const Login = () => {
@@ -14,10 +15,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validate email format
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Sanitize inputs
+    const sanitizedEmail = sanitizeInput(email);
+    const sanitizedPassword = sanitizeInput(password);
+
     setLoading(true);
 
     try {
-      login(email, password);
+      login(sanitizedEmail, sanitizedPassword);
       navigate('/');
     } catch (err) {
       setError(err.message);
