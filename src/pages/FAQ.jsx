@@ -133,11 +133,22 @@ const FAQ = () => {
                         <button
                           className="faq-question"
                           onClick={() => toggleFAQ(categoryIndex, questionIndex)}
+                          aria-expanded={isActive}
+                          aria-controls={`faq-answer-${index}`}
+                          id={`faq-question-${index}`}
                         >
                           <span>{item.question}</span>
-                          <i className={`fa-solid fa-chevron-${isActive ? 'up' : 'down'}`}></i>
+                          <i 
+                            className={`fa-solid fa-chevron-${isActive ? 'up' : 'down'}`}
+                            aria-hidden="true"
+                          ></i>
                         </button>
-                        <div className={`faq-answer ${isActive ? 'show' : ''}`}>
+                        <div 
+                          className={`faq-answer ${isActive ? 'show' : ''}`}
+                          id={`faq-answer-${index}`}
+                          role="region"
+                          aria-labelledby={`faq-question-${index}`}
+                        >
                           <p>{item.answer}</p>
                         </div>
                       </div>

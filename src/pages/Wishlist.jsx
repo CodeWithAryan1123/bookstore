@@ -9,15 +9,7 @@ const Wishlist = () => {
 
   const handleAddToCart = (book) => {
     addToCart(book);
-    showToast('Added to cart!');
-  };
-
-  const showToast = (message) => {
-    const toast = document.createElement('div');
-    toast.className = 'toast success';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+    showToast(`${book.title} added to cart!`, 'success');
   };
 
   if (wishlist.length === 0) {

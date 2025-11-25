@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useOrders } from '../context/OrderContext';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { showToast } from '../utils/toast';
 import './Profile.css';
 
 const Profile = () => {
@@ -35,6 +36,14 @@ const Profile = () => {
     phone: user?.phone || '',
     address: formatAddress(user?.address)
   });
+  
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -56,20 +65,56 @@ const Profile = () => {
       [e.target.name]: e.target.value
     });
   };
+  
+  const handlePasswordChange = (e) => {
+    setPasswordForm({
+      ...passwordForm,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     updateUser(formData);
     setIsEditing(false);
-    showToast('Profile updated successfully!');
+    showToast('Profile updated successfully!', 'success');
   };
-
-  const showToast = (message) => {
-    const toast = document.createElement('div');
-    toast.className = 'toast success';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+  
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    
+    // Verify current password
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const currentUser = users.find(u => u.id === user.id);
+    
+    if (!currentUser || currentUser.password !== passwordForm.currentPassword) {
+      showToast('Current password is incorrect', 'error');
+      return;
+    }
+    
+    // Validate new password
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      showToast('New passwords do not match', 'error');
+      return;
+    }
+    
+    if (passwordForm.newPassword.length < 8) {
+      showToast('Password must be at least 8 characters', 'error');
+      return;
+    }
+    
+    // Update password
+    currentUser.password = passwordForm.newPassword;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Clear form
+    setPasswordForm({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setShowPasswordSection(false);
+    showToast('Password updated successfully!', 'success');
   };
 
   const formatDate = (dateString) => {
@@ -205,35 +250,81 @@ const Profile = () => {
                     Save Changes
                   </button>
                 </form>
-              ) : (
-                <div className="profile-info-display">
-                  <div className="info-row">
-                    <span className="info-label">Full Name:</span>
-                    <span className="info-value">{user.name}</span>
+                ) : (
+                  <div className="profile-info-display">
+                    <div className="info-row">
+                      <span className="info-label">Full Name:</span>
+                      <span className="info-value">{user.name}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Email:</span>
+                      <span className="info-value">{user.email}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Phone:</span>
+                      <span className="info-value">{user.phone || 'Not provided'}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Address:</span>
+                      <span className="info-value">{formatAddress(user.address) || 'Not provided'}</span>
+                    </div>
                   </div>
-                  <div className="info-row">
-                    <span className="info-label">Email:</span>
-                    <span className="info-value">{user.email}</span>
+                )}
+                
+                <div className="password-section" style={{ marginTop: '30px' }}>
+                  <div className="section-header">
+                    <h3>Change Password</h3>
+                    <button 
+                      className="btn btn-outline btn-sm"
+                      onClick={() => setShowPasswordSection(!showPasswordSection)}
+                    >
+                      {showPasswordSection ? 'Cancel' : 'Change Password'}
+                    </button>
                   </div>
-                  <div className="info-row">
-                    <span className="info-label">Phone:</span>
-                    <span className="info-value">{user.phone || 'Not provided'}</span>
-                  </div>
-                  <div className="info-row">
-                    <span className="info-label">Address:</span>
-                    <span className="info-value">{formatAddress(user.address) || 'Not provided'}</span>
-                  </div>
-                  <div className="info-row">
-                    <span className="info-label">Member Since:</span>
-                    <span className="info-value">
-                      {new Date(user.createdAt).toLocaleDateString('en-US', { 
-                        month: 'long', 
-                        year: 'numeric' 
-                      })}
-                    </span>
-                  </div>
+                  
+                  {showPasswordSection && (
+                    <form onSubmit={handlePasswordSubmit} className="profile-form" style={{ maxWidth: '500px' }}>
+                      <div className="form-group">
+                        <label>Current Password *</label>
+                        <input
+                          type="password"
+                          name="currentPassword"
+                          value={passwordForm.currentPassword}
+                          onChange={handlePasswordChange}
+                          required
+                        />
+                      </div>
+                      
+                      <div className="form-group">
+                        <label>New Password *</label>
+                        <input
+                          type="password"
+                          name="newPassword"
+                          value={passwordForm.newPassword}
+                          onChange={handlePasswordChange}
+                          minLength={8}
+                          required
+                        />
+                        <small>At least 8 characters</small>
+                      </div>
+                      
+                      <div className="form-group">
+                        <label>Confirm New Password *</label>
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          value={passwordForm.confirmPassword}
+                          onChange={handlePasswordChange}
+                          required
+                        />
+                      </div>
+                      
+                      <button type="submit" className="btn btn-primary">
+                        Update Password
+                      </button>
+                    </form>
+                  )}
                 </div>
-              )}
               </div>
             )}
 

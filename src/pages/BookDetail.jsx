@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { booksData } from '../data/books';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { showToast } from '../utils/toast';
+import { updateMetaTags, resetMetaTags } from '../utils/seo';
 import './BookDetail.css';
 
 const BookDetail = () => {
@@ -13,6 +15,26 @@ const BookDetail = () => {
   const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  
+  const MAX_QUANTITY = 10;
+  
+  // Update meta tags when book loads
+  useEffect(() => {
+    if (book) {
+      updateMetaTags({
+        title: `${book.title} by ${book.author} - Once Upon A Bookshelf`,
+        description: `${book.description.substring(0, 155)}...`,
+        image: book.image,
+        url: `https://onceuponabookshelf.com/book/${book.id}`,
+        type: 'product'
+      });
+    }
+    
+    // Reset meta tags when component unmounts
+    return () => {
+      resetMetaTags();
+    };
+  }, [book]);
 
   if (!book) {
     return (
@@ -27,20 +49,12 @@ const BookDetail = () => {
 
   const handleAddToCart = () => {
     addToCart(book, quantity);
-    showToast('Added to cart!');
+    showToast('Added to cart!', 'success');
   };
 
   const handleWishlist = () => {
     addToWishlist(book);
-    showToast('Added to wishlist!');
-  };
-
-  const showToast = (message) => {
-    const toast = document.createElement('div');
-    toast.className = 'toast success';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+    showToast('Added to wishlist!', 'success');
   };
 
   const discount = Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100);
@@ -108,8 +122,15 @@ const BookDetail = () => {
               <div className="quantity-controls">
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
                 <span className="quantity-display">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                <button onClick={() => {
+                  if (quantity >= MAX_QUANTITY) {
+                    showToast(`Maximum quantity is ${MAX_QUANTITY}`, 'error');
+                  } else {
+                    setQuantity(quantity + 1);
+                  }
+                }}>+</button>
               </div>
+              <span className="quantity-limit-text">Max: {MAX_QUANTITY}</span>
             </div>
 
             <div className="book-detail-actions">

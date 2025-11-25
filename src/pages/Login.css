@@ -135,10 +135,6 @@
   font-size: 12px;
   font-weight: 600;
 }
-  border-radius: var(--border-radius-sm);
-  margin-bottom: 20px;
-  font-size: 14px;
-}
 
 .auth-form {
   display: flex;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import BookCard from '../components/BookCard';
 import { booksData, categories } from '../data/books';
+import { useDebounce } from '../hooks/useDebounce';
 import './Books.css';
 
 const Books = () => {
@@ -9,6 +10,7 @@ const Books = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300); // Debounce search by 300ms
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [minRating, setMinRating] = useState(0);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
@@ -38,8 +40,8 @@ const Books = () => {
 
   const filteredBooks = booksData.filter(book => {
     const matchesCategory = selectedCategory === 'All' || book.category === selectedCategory;
-    const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          book.author.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = book.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+                          book.author.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
     const matchesPrice = book.price >= priceRange[0] && book.price <= priceRange[1];
     const matchesRating = book.rating >= minRating;
     

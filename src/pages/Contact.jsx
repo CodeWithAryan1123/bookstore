@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { validateEmail, sanitizeInput } from '../utils/validation';
+import { showToast } from '../utils/toast';
 import './Contact.css';
 
 const Contact = () => {
@@ -9,21 +11,99 @@ const Contact = () => {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
-
+  const [errors, setErrors] = useState({});
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
+  };
+  
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Validate name
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+    
+    // Validate email
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!validateEmail(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    // Validate subject
+    if (!formData.subject.trim()) {
+      newErrors.subject = 'Subject is required';
+    } else if (formData.subject.trim().length < 5) {
+      newErrors.subject = 'Subject must be at least 5 characters';
+    }
+    
+    // Validate message
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 3000);
+    
+    if (!validateForm()) {
+      showToast('Please fix the errors in the form', 'error');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Sanitize inputs
+      const sanitizedData = {
+        name: sanitizeInput(formData.name),
+        email: sanitizeInput(formData.email),
+        subject: sanitizeInput(formData.subject),
+        message: sanitizeInput(formData.message),
+        timestamp: new Date().toISOString()
+      };
+      
+      // Store in localStorage (in real app, would send to server)
+      const existingMessages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+      existingMessages.push(sanitizedData);
+      localStorage.setItem('contactMessages', JSON.stringify(existingMessages));
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setSubmitted(true);
+      showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      }, 3000);
+      
+    } catch (error) {
+      showToast('Failed to send message. Please try again.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -82,59 +162,63 @@ const Contact = () => {
               )}
               <form onSubmit={handleSubmit} className="contact-form">
                 <div className="form-group">
-                  <label htmlFor="name">Full Name</label>
+                  <label htmlFor="name">Full Name *</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    required
                     placeholder="John Doe"
+                    disabled={isSubmitting}
                   />
+                  {errors.name && <span className="error-text">{errors.name}</span>}
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="email">Email Address</label>
+                  <label htmlFor="email">Email Address *</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    required
                     placeholder="john@example.com"
+                    disabled={isSubmitting}
                   />
+                  {errors.email && <span className="error-text">{errors.email}</span>}
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="subject">Subject</label>
+                  <label htmlFor="subject">Subject *</label>
                   <input
                     type="text"
                     id="subject"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    required
                     placeholder="How can we help you?"
+                    disabled={isSubmitting}
                   />
+                  {errors.subject && <span className="error-text">{errors.subject}</span>}
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="message">Message</label>
+                  <label htmlFor="message">Message *</label>
                   <textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    required
                     rows="6"
                     placeholder="Tell us more about your inquiry..."
+                    disabled={isSubmitting}
                   ></textarea>
+                  {errors.message && <span className="error-text">{errors.message}</span>}
                 </div>
 
-                <button type="submit" className="btn btn-primary">
-                  <i className="fa-solid fa-paper-plane"></i> Send Message
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting || submitted}>
+                  <i className="fa-solid fa-paper-plane"></i> {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>

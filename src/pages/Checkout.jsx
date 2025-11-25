@@ -17,16 +17,27 @@ const Checkout = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   
-  // Address form state
-  const [addressForm, setAddressForm] = useState({
-    name: user?.name || '',
-    phone: user?.phone || '',
-    address1: user?.address?.address1 || '',
-    address2: user?.address?.address2 || '',
-    city: user?.address?.city || '',
-    state: user?.address?.state || '',
-    pincode: user?.address?.pincode || ''
-  });
+  // Address form state - load from localStorage if available
+  const getSavedAddress = () => {
+    if (user) {
+      const savedAddress = localStorage.getItem(`savedAddress_${user.id}`);
+      if (savedAddress) {
+        return JSON.parse(savedAddress);
+      }
+    }
+    return {
+      name: user?.name || '',
+      phone: user?.phone || '',
+      address1: user?.address?.address1 || '',
+      address2: user?.address?.address2 || '',
+      city: user?.address?.city || '',
+      state: user?.address?.state || '',
+      pincode: user?.address?.pincode || ''
+    };
+  };
+  
+  const [addressForm, setAddressForm] = useState(getSavedAddress());
+  const [saveAddress, setSaveAddress] = useState(true);
   
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [couponCode, setCouponCode] = useState('');
@@ -119,6 +130,11 @@ const Checkout = () => {
   
   const handleContinue = () => {
     if (step === 1 && validateAddress()) {
+      // Save address to localStorage if user wants
+      if (saveAddress && user) {
+        localStorage.setItem(`savedAddress_${user.id}`, JSON.stringify(addressForm));
+      }
+      
       // Save address to user profile
       updateUser({
         name: addressForm.name,
@@ -304,6 +320,18 @@ const Checkout = () => {
                         required
                       />
                     </div>
+                  </div>
+                  
+                  <div className="form-group" style={{ marginTop: '16px' }}>
+                    <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={saveAddress}
+                        onChange={(e) => setSaveAddress(e.target.checked)}
+                        style={{ width: 'auto' }}
+                      />
+                      <span>Save this address for future orders</span>
+                    </label>
                   </div>
                   
                   <button 

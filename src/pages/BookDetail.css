@@ -149,11 +149,18 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 32px;
+  flex-wrap: wrap;
 }
 
 .quantity-section label {
   font-weight: 600;
   font-size: 16px;
+}
+
+.quantity-limit-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-left: auto;
 }
 
 .quantity-controls {
