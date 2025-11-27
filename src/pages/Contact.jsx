@@ -12,6 +12,8 @@ const Contact = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
